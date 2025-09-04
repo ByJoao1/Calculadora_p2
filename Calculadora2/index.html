@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora Simples</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="calculator">
+    <h1>Calculadora Simples</h1>
+    <input type="text" class="display" id="display" value="0" disabled />
+    <div class="buttons">
+      <button class="btn function" id="clear">C</button>
+      <button class="btn operator" id="divide">÷</button>
+      <button class="btn operator" id="multiply">×</button>
+      <button class="btn operator" id="subtract">−</button>
+
+      <button class="btn digit">7</button>
+      <button class="btn digit">8</button>
+      <button class="btn digit">9</button>
+      <button class="btn operator" id="add">+</button>
+
+      <button class="btn digit">4</button>
+      <button class="btn digit">5</button>
+      <button class="btn digit">6</button>
+      <button class="btn equal" id="equal">=</button>
+
+      <button class="btn digit">1</button>
+      <button class="btn digit">2</button>
+      <button class="btn digit">3</button>
+      <div></div>
+
+      <button class="btn digit zero">0</button>
+      <button class="btn digit">.</button>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  <script>
+    let display = document.getElementById('display');
+    let current = '0';
+
+    function updateDisplay() {
+      display.value = current.replace('.', ',');
+    }
+
+    function input(val) {
+      if (current === '0' && val !== '.' && val !== '%') current = '';
+      if (val === ',' || val === '.') {
+        if (!current.includes('.')) current += '.';
+      } else if (val === '%') {
+        current = (parseFloat(current.replace(',', '.')) / 100).toString();
+      } else {
+        current += val;
+      }
+      updateDisplay();
+    }
+
+    function clearDisplay() {
+      current = '0';
+      updateDisplay();
+    }
+
+    function backspace() {
+      if (current.length > 1) {
+        current = current.slice(0, -1);
+      } else {
+        current = '0';
+      }
+      updateDisplay();
+    }
+
+    function calculate() {
+      try {
+        let result = eval(current.replace(',', '.'));
+        current = result.toString();
+      } catch {
+        current = 'Erro';
+      }
+      updateDisplay();
+    }
+
+    function toggleSign() {
+      if (current.startsWith('-')) {
+        current = current.slice(1);
+      } else if (current !== '0') {
+        current = '-' + current;
+      }
+      updateDisplay();
+    }
+
+    document.getElementById('clear').addEventListener('click', clearDisplay);
+    document.getElementById('divide').addEventListener('click', () => input('/'));
+    document.getElementById('multiply').addEventListener('click', () => input('*'));
+    document.getElementById('subtract').addEventListener('click', () => input('-'));
+    document.getElementById('add').addEventListener('click', () => input('+'));
+    document.getElementById('equal').addEventListener('click', calculate);
+
+    document.querySelectorAll('.btn.digit').forEach(button => {
+      button.addEventListener('click', () => input(button.textContent));
+    });
+
+    document.querySelector('.btn.digit.zero').addEventListener('click', () => input('0'));
+    document.querySelector('.btn.digit:last-child').addEventListener('click', () => input('.'));
+  </script>
+</body>
+</html>
